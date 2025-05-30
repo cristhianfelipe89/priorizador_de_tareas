@@ -65,11 +65,11 @@ class MinHeap {
 
             let smallest = i;
 
-            if (left < this.size && this.heap[left] < this.heap[smallest]) {
+            if (left < this.size && this.heap[left].priority < this.heap[smallest].priority) {
                 smallest = left;
             }
 
-            if (right < this.size && this.heap[right] < this.heap[smallest]) {
+            if (right < this.size && this.heap[right].priority < this.heap[smallest].priority) {
                 smallest = right;
             }
 
@@ -80,20 +80,19 @@ class MinHeap {
         }
     }
 
-    printHeapPretty() {
-        for (let i = 0; i < Math.floor(this.size / 2); i++) {
-            const left = this.leftChildIndex(i);
-            const right = this.rightChildIndex(i);
-
-            let output = `Parent: ${this.heap[i]}`;
-            if (left < this.size) output += ` Left: ${this.heap[left]}`;
-            if (right < this.size) output += ` Right: ${this.heap[right]}`;
-            console.log(output);
+    printHeap() {
+        console.log("Estado actual del heap:");
+        for (let i = 0; i < this.size; i++) {
+            console.log(`Tarea: ${this.heap[i].name}, Prioridad: ${this.heap[i].priority}`);
         }
     }
 
-    printHeap() {
-        console.log(this.heap.slice(0, this.size));
+    extractAllSorted() {
+        const result = [];
+        while (this.size > 0) {
+            result.push(this.extractMin());
+        }
+        return result;
     }
 }
 
