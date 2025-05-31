@@ -1,3 +1,4 @@
+// MinHeap adaptado a tareas con prioridad
 class MinHeap {
     constructor(maxSize) {
         this.heap = new Array(maxSize);
@@ -28,18 +29,18 @@ class MinHeap {
         [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
     }
 
-    insert(element) {
+    insert(task) {
         if (this.size >= this.maxSize) {
             console.warn("Heap is full");
             return;
         }
 
-        this.heap[this.size] = element;
+        this.heap[this.size] = task;
         let current = this.size;
 
         while (
             current > 0 &&
-            this.heap[current] < this.heap[this.parentIndex(current)]
+            this.heap[current].priority < this.heap[this.parentIndex(current)].priority
         ) {
             this.swap(current, this.parentIndex(current));
             current = this.parentIndex(current);
@@ -49,13 +50,13 @@ class MinHeap {
     }
 
     extractMin() {
-        if (this.size <= 0) return Number.NEGATIVE_INFINITY;
+        if (this.size <= 0) return null;
 
-        const popped = this.heap[0];
+        const minTask = this.heap[0];
         this.heap[0] = this.heap[this.size - 1];
         this.size--;
         this.minHeapify(0);
-        return popped;
+        return minTask;
     }
 
     minHeapify(i) {
@@ -96,27 +97,25 @@ class MinHeap {
     }
 }
 
-function insertRandomNumbersToHeap(heap, n, max = 100) {
-    console.log(`Insertando ${n} números aleatorios en el heap:\n`);
+// Ejemplo de uso
+const heap = new MinHeap(10);
 
-    for (let i = 0; i < n; i++) {
-        const num = Math.floor(Math.random() * max); // Número entre 0 y max-1
-        console.log(`Insertando: ${num}`);
-        heap.insert(num);
-    }
+heap.insert({ name: "Estudiar para examen", priority: 1 });
+heap.insert({ name: "Hacer mercado", priority: 2 });
+heap.insert({ name: "Terminar el curso del SENA", priority: 4 });
+heap.insert({ name: "Sacar al perro", priority: 3 });
 
-    console.log("\n ---- Representación del heap: ----");
-    heap.printHeapPretty();
+heap.printHeap();
 
-    console.log("\n ---- Heap como arreglo: ----");
-    heap.printHeap();
+console.log("\nTarea más prioritaria extraída:");
+const minTask = heap.extractMin();
+console.log(`Tarea: ${minTask.name}, Prioridad: ${minTask.priority}`);
 
-    console.log("\n ---- Extraer mínimo: ----");
-    console.log("Min:", heap.extractMin());
+console.log("\nHeap después de extracción:");
+heap.printHeap();
 
-    console.log("\n ---- Heap después de extraer mínimo: ----");
-    heap.printHeap();
-}
-
-const heap = new MinHeap(50); // tamaño máximo arbitrario
-insertRandomNumbersToHeap(heap, 20); // inserta 20 números aleatorios
+console.log("\nListado ordenado de tareas:");
+const sortedTasks = heap.extractAllSorted();
+sortedTasks.forEach(task => {
+    console.log(`Tarea: ${task.name}, Prioridad: ${task.priority}`);
+});
